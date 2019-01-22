@@ -2,6 +2,7 @@ import threading
 import time
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 from utils import Utils
 from utils.Utils import Conf, Redis, DbUtils
@@ -94,7 +95,11 @@ if __name__ == '__main__':
     Utils.Utils.load_config()
     Redis.connect()
     DbUtils.connect()
-    browser = webdriver.Chrome(Conf.driver_path)
+    chrome_options = Options()
+    # Chrome-headless 模式， Google 针对 Chrome 浏览器 59版 新增加的一种模式，可以让你不打开UI界面的情况下使用 Chrome 浏览器，所以运行效果与 Chrome 保持完美一致。
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    browser = webdriver.Chrome(Conf.driver_path, chrome_options=chrome_options)
     get_all_play_list(browser)
     for i in range(5):
         t = threading.Thread(target=run)
